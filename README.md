@@ -93,7 +93,7 @@ Self‑Supervised Learning (SSL) leverages unlabeled data to learn rich visual r
   ```bash
   python src/mae/eval.py \
     --data_root data/ssl_dataset/val.X \
-    --checkpoint results/mae/mae_checkpoint_epoch20.pth \
+    --checkpoint results/mae/mae_checkpoint_epoch50.pth \
     --batch_size 64 \
     --epochs 50 \
     --lr 1e-3 \
@@ -104,7 +104,7 @@ Self‑Supervised Learning (SSL) leverages unlabeled data to learn rich visual r
 
 ## How to Use a Pretrained Model
 
-Once you have a pretrained checkpoint (e.g. `simclr_best_model.pt` or `mae_checkpoint_epoch20.pth`), follow these steps to extract features or run classification on new images:
+Once you have a pretrained checkpoint (e.g. `simclr_best_model.pt` or `mae_checkpoint_epoch50.pth`), follow these steps to extract features or run classification on new images:
 
 1. **Load your model and checkpoint**
 
