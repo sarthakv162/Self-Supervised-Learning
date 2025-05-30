@@ -67,8 +67,8 @@ Self‑Supervised Learning (SSL) leverages unlabeled data to learn rich visual r
   python src/mae/train.py \
     --data_root data/ssl_dataset \
     --train_folders train.X1 train.X2 train.X3 train.X4 \
-    --batch_size 64 \
-    --epochs 20 \
+    --batch_size 128 \
+    --epochs 50 \
     --lr 1e-4 \
     --mask_ratio 0.75 \
     --output_dir results/mae
