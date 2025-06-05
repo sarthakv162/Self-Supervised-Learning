@@ -19,8 +19,8 @@ Self‑Supervised Learning (SSL) leverages unlabeled data to learn rich visual r
 
 1. **Clone** this repository  
    ```bash
-   git clone https://github.com/sarthakv162/Self-Supervised-Learning.git
-   cd Self-Supervised-Learning
+   git clone https://github.com/sarthakv162/Vision-SSL-Frameworks
+   cd Vision-SSL-Frameworks
 
 
 2. **Create & activate** a Python environment
