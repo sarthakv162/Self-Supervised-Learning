@@ -6,9 +6,10 @@
 ## Project Overview
 
 Self‑Supervised Learning (SSL) leverages unlabeled data to learn rich visual representations. In this repository, we:
-1. **Pretrain** three SSL backbones on ImageNet‑100 (unlabeled):
+1. **Pretrain** four SSL backbones on ImageNet‑100 (unlabeled):
    - **SimCLR** (Contrastive Learning)
    - **MoCo** (Momentum Contrast)
+   - **SimSiam** (Simple Siamese Representation Learning)
    - **MAE** (Masked Autoencoder)  
 2. **Freeze** each backbone and train a **linear classifier** on 100 labeled classes.  
 3. **Compare** downstream performance in accuracy, F1 score, training efficiency, and resource usage.
@@ -70,6 +71,18 @@ Self‑Supervised Learning (SSL) leverages unlabeled data to learn rich visual r
     --output_dir results/moco
   ```
 
+* **SimSiam**
+
+  ```bash
+  python src/simsiam/train.py \
+    --data_root data/ssl_dataset \
+    --train_folders train.X1 train.X2 train.X3 train.X4 \
+    --batch_size 64 \
+    --epochs 50 \
+    --lr 1e-3 \
+    --output_dir results/simsiam
+  ```
+
 * **MAE**
 
   ```bash
@@ -110,6 +123,17 @@ Self‑Supervised Learning (SSL) leverages unlabeled data to learn rich visual r
     --output_dir results/moco/eval
   ```
 
+* **SimSiam Eval**
+
+  ```bash
+  python src/simsiam/eval.py \
+    --data_root data/ssl_dataset/val.X \
+    --checkpoint results/simsiam/best_model.pt \
+    --batch_size 64 \
+    --lr 1e-3 \
+    --output_dir results/simsiam/eval
+  ```
+
 * **MAE Eval**
 
   ```bash
@@ -129,12 +153,12 @@ Self‑Supervised Learning (SSL) leverages unlabeled data to learn rich visual r
 
 ```python
 import torch
-from src.moco.model import MoCoModel  # or SimCLRModel, CustomMAE
+from src.simsiam.model import SimSiamModel  # or MoCoModel, SimCLRModel, CustomMAE
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-model = MoCoModel(base_model='resnet18', projection_dim=128)
+model = SimSiamModel(base_model='resnet18', projection_dim=128)
 model.encoder.fc = torch.nn.Identity()
-state = torch.load('results/moco/best_model.pt', map_location=device)
+state = torch.load('results/simsiam/best_model.pt', map_location=device)
 model.load_state_dict(state['model_state_dict'], strict=False)
 model = model.encoder.to(device)
 model.eval()
@@ -168,9 +192,9 @@ print('Extracted feature vector shape:', features.shape)
 ### 4. Optional: Run a linear classifier
 
 ```python
-from src.moco.eval import LinearClassifier
+from src.simsiam.eval import LinearClassifier
 classifier = LinearClassifier(num_features=512, num_classes=100).to(device)
-classifier.load_state_dict(torch.load('results/moco/eval/best_linear.pt'))
+classifier.load_state_dict(torch.load('results/simsiam/eval/best_linear.pt'))
 classifier.eval()
 logits = classifier(features)
 pred_class = logits.argmax(dim=-1).item()
@@ -183,6 +207,7 @@ print('Predicted class index:', pred_class)
 
 * **SimCLR**: Ting Chen et al., “A Simple Framework for Contrastive Learning of Visual Representations”, ICML 2020.
 * **MoCo**: Kaiming He et al., “Momentum Contrast for Unsupervised Visual Representation Learning”, CVPR 2020.
+* **SimSiam**: Xinlei Chen and Kaiming He, “Exploring Simple Siamese Representation Learning”, CVPR 2021.
 * **MAE**: Kaiming He et al., “Masked Autoencoders Are Scalable Vision Learners”, CVPR 2022.
 * **ViT**: Alexey Dosovitskiy et al., “An Image is Worth 16×16 Words”, ICLR 2021.
 * **ResNet**: Kaiming He et al., “Deep Residual Learning for Image Recognition”, CVPR 2016.
@@ -196,22 +221,10 @@ print('Predicted class index:', pred_class)
 
 ---
 
-##  Contact
+## Contact
 
 Sarthak Verma
 📧 [sarthak16.verma2005@gmail.com](mailto:sarthak16.verma2005@gmail.com)
 🔗 GitHub: [@sarthakv162](https://github.com/sarthakv162)
 
 Feel free to open issues or PRs with questions, feedback, or enhancements!
-
-```
-
----
-
-Let me know if you want:
--  A comparison table of results
--  Experiment tracking with TensorBoard or W&B
--  Ready-to-use Jupyter notebooks or Colab link
-
-Happy to help fine-tune this further!
-```
